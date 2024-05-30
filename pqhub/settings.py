@@ -14,6 +14,8 @@ from datetime import timedelta
 from pathlib import Path
 import os
 import dj_database_url
+import asyncio
+import aioredis
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -264,3 +266,16 @@ EMAIL_DEBUG = True
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
+
+async def main():
+    # Connect to your internal Redis instance using the REDIS_URL environment variable
+    # The REDIS_URL is set to the internal Redis URL e.g. redis://red-343245ndffg023:6379
+    redis = aioredis.from_url(os.environ['REDIS_URL'])
+    await redis.set("my-key", "aioredis")
+    value = await redis.get("my-key")
+    print(value)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+    
